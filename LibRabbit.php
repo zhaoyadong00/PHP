@@ -92,3 +92,36 @@ class LibRabbit{
         $this->conn->disconnect();
     }
 }
+
+//config
+
+define("RABBIT_CONF" , [
+            'host' => '180.101.193.177',
+            'port' => 5672,
+            'login' => 'rabbitadmin',
+            'password' => '123456',
+            'queueName' => 'ceshi',
+            'exchange'  =>  'exchange',
+            'exchangeType' => 'direct',
+            'vhost'         =>  '/',
+            'route'         =>  'hello',
+        ]);
+
+//写入队列
+$rabbit = new LibRabbit();
+
+for ($i = 0 ; $i < 10 ; $i++){
+        $rabbit->push(["aa" => "bb" , "cc" => "dd"]);
+}
+
+//消费队列
+
+$callback_func = function(\AMQPEnvelope $message, \AMQPQueue $q) use (&$max_jobs) {
+    echo " [x] Received: ", $message->getBody(), PHP_EOL;
+    sleep(sleep(substr_count($message->getBody(), '.')));
+    echo " [X] Done", PHP_EOL;
+    $q->ack($message->getDeliveryTag());
+};
+$rabbit->consume($callback_func);
+
+
