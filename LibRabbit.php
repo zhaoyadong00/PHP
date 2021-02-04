@@ -15,7 +15,7 @@ class LibRabbit{
 
     public function __construct(){
         try {
-            $this->conn = new \AMQPConnection(array('host' => '180.101.193.177', 'port' => '5672', 'vhost' => '/', 'login' => 'rabbitadmin', 'password' => '123456'));
+            $this->conn = new \AMQPConnection(RABBIT_CONF);
             if (!$this->conn->connect()) {
                 throw new \Exception('Cannot connect to the broker');
             }
